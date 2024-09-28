@@ -6,7 +6,7 @@ import (
 )
 
 func Test_GetSet(t *testing.T) {
-	c := NewCache(4)
+	c := NewCache[int](4)
 
 	_, ok := c.Get("foo")
 	if ok {
@@ -15,7 +15,7 @@ func Test_GetSet(t *testing.T) {
 
 	// populate with a couple of entries
 	c.Set("k-1", 42)
-	c.Set("k-2", "42")
+	c.Set("k-2", 53)
 
 	tests := []struct {
 		name           string
@@ -30,7 +30,7 @@ func Test_GetSet(t *testing.T) {
 		},
 		{name: "Get existing key with string value",
 			k:              "k-2",
-			expectedValue:  "42",
+			expectedValue:  53,
 			expectedExists: true,
 		},
 		{name: "Get non existing key returns !exists",
@@ -77,7 +77,7 @@ func sameKeys(k1, k2 []string) bool {
 }
 
 func Test_Keys(t *testing.T) {
-	c := NewCache(4)
+	c := NewCache[int](4)
 	expectedEmpty := c.Keys()
 	if len(expectedEmpty) != 0 {
 		t.Errorf("Expected empty keys from a new cache. Got %v instead", expectedEmpty)
@@ -101,7 +101,7 @@ func Test_Keys(t *testing.T) {
 }
 
 func Test_Concurrency(t *testing.T) {
-	c := NewCache(8)
+	c := NewCache[int](8)
 
 	for i := 0; i < 10; i++ {
 		k := fmt.Sprintf("k-%02d", i)
